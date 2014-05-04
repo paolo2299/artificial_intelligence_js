@@ -16,19 +16,30 @@ define(['lib/underscore', 'lib/priority_queue'], function(_, pq){
         return node;
       }
     }
-    return undefined;
+    return null;
   };
 
   Frontier.prototype.top = function(){
-    return this._queue.queue[0];
+    var node = this.pop();
+    if(node){
+      this.add(node);
+      return node;
+    }
+    return null;
   };
 
   Frontier.prototype.getNodeWithState = function(state){
-    return this._states[state];
+    var node = this._states[state];
+    if (node !== undefined) {
+      return node;
+    }
+    return null;
   }
 
   Frontier.prototype.add = function(node){
-    //TODO raise if duplicate state
+    if (this._states[node.state] !== undefined){
+      throw new Error("Node with state " + node.state + " already exists in the frontier");
+    }
     this._queue.push(node);
     this._states[node.state] = node;
     delete this._deleted_states[node.state];
@@ -37,11 +48,12 @@ define(['lib/underscore', 'lib/priority_queue'], function(_, pq){
 
   Frontier.prototype.delete = function(node){
     this._deleted_states[node.state] = true;
+    delete this._states[node.state]
+    return this;
   };
 
   Frontier.prototype.isEmpty = function(){
-    //TODO take deleted states into account
-    return this._queue.length === 0;
+    return (_.size(this._states) === 0);
   };
 
   return Frontier;
