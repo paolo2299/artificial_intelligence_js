@@ -1,8 +1,8 @@
 define(['src/graph_search/frontier'], function(Frontier){
 
   describe("Frontier", function(){
-    var frontier;
-    var node;
+    var frontier,
+        node;
 
     beforeEach(function(){
       frontier = new Frontier();

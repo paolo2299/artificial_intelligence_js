@@ -16,7 +16,8 @@ require.config({
 
 
 require([
-  "graph_search/FrontierSpec"
+  "graph_search/FrontierSpec",
+  "graph_search/NodeSpec"
   ], function () {
 	window.executeTests();
 });
