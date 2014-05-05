@@ -2,7 +2,7 @@ define(['lib/underscore', 'lib/priority_queue'], function(_, pq){
   
   var Frontier = function(){
     this._queue = pq.PriorityQueue(function(n1, n2){ 
-      return n2.priority - n1.priority;
+      return n1.priority - n2.priority;
     });
     this._states = {};
     this._deleted_states = {};

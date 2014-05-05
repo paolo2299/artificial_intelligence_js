@@ -73,21 +73,21 @@ define(['src/graph_search/frontier'], function(Frontier){
         expect(frontier.isEmpty()).toBe(true);
       });
 
-      it("should remove and return the highest priority node when frontier contains multiple nodes", function(){
+      it("should remove and return the lowest priority node when frontier contains multiple nodes", function(){
         frontier.add(node1);
         frontier.add(node2);
-        expect(frontier.pop()).toEqual(node2);
+        expect(frontier.pop()).toEqual(node1);
       });
 
       it("should not rely on the order the nodes are added", function(){
         frontier.add(node1);
         frontier.add(node2);
-        expect(frontier.pop()).toEqual(node2);
+        expect(frontier.pop()).toEqual(node1);
 
         frontier = new Frontier();
         frontier.add(node2);
         frontier.add(node1);
-        expect(frontier.pop()).toEqual(node2);
+        expect(frontier.pop()).toEqual(node1);
       });
 
       it("should not return deleted nodes", function(){
@@ -107,20 +107,20 @@ define(['src/graph_search/frontier'], function(Frontier){
       it("should return but not remove the highest priority node when frontier contains multiple nodes", function(){
         frontier.add(node1);
         frontier.add(node2);
-        expect(frontier.top()).toEqual(node2);
+        expect(frontier.top()).toEqual(node1);
         //node2 should still be in frontier
-        expect(frontier.top()).toEqual(node2);
+        expect(frontier.top()).toEqual(node1);
       });
 
       it("should not rely on the order the nodes are added", function(){
         frontier.add(node1);
         frontier.add(node2);
-        expect(frontier.top()).toEqual(node2);
+        expect(frontier.top()).toEqual(node1);
 
         frontier = new Frontier();
         frontier.add(node2);
         frontier.add(node1);
-        expect(frontier.top()).toEqual(node2);
+        expect(frontier.top()).toEqual(node1);
       });
 
       it("should not return deleted nodes", function(){
