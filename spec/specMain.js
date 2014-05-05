@@ -17,7 +17,8 @@ require.config({
 
 require([
   "graph_search_spec/FrontierSpec",
-  "graph_search_spec/NodeSpec"
+  "graph_search_spec/NodeSpec",
+  "graph_search_spec/solver/cheapest_first_search_spec"
   ], function () {
 	window.executeTests();
 });

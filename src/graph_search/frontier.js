@@ -2,7 +2,7 @@ define(['lib/priority_queue'], function(pq){
   
   var Frontier = function(){
     this._queue = pq.PriorityQueue(function(n1, n2){ 
-      return n1.priority - n2.priority;
+      return n1.priority() - n2.priority();
     });
     this._states = {};
   };

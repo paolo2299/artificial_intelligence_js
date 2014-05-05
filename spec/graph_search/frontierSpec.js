@@ -8,11 +8,11 @@ define(['graph_search/frontier'], function(Frontier){
       frontier = new Frontier();
       node1 = {
         state: "test1",
-        priority: 1
+        priority: function(){return 1;}
       };
       node2 = {
         state: "test2",
-        priority: 2
+        priority: function(){return 2;}
       };
     });
 
