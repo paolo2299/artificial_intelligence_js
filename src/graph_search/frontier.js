@@ -1,20 +1,17 @@
-define(['lib/underscore', 'lib/priority_queue'], function(_, pq){
+define(['lib/priority_queue'], function(pq){
   
   var Frontier = function(){
     this._queue = pq.PriorityQueue(function(n1, n2){ 
       return n1.priority - n2.priority;
     });
     this._states = {};
-    this._deleted_states = {};
   };
 
   Frontier.prototype.pop = function(){
-    var node;
-    while(node = this._queue.shift()){
-      if (this._deleted_states[node.state] === undefined) {
-        delete this._states[node.state];
-        return node;
-      }
+    var node = this._queue.shift();
+    if(node) {
+      delete this._states[node.state];
+      return node;
     }
     return null;
   };
@@ -42,18 +39,19 @@ define(['lib/underscore', 'lib/priority_queue'], function(_, pq){
     }
     this._queue.push(node);
     this._states[node.state] = node;
-    delete this._deleted_states[node.state];
     return this;
   };
 
   Frontier.prototype.delete = function(node){
-    this._deleted_states[node.state] = true;
-    delete this._states[node.state]
+    this._queue.deleteAll(function(n){
+      return n.state === node.state;
+    });
+    delete this._states[node.state];
     return this;
   };
 
   Frontier.prototype.isEmpty = function(){
-    return (_.size(this._states) === 0);
+    return (this._queue.length === 0);
   };
 
   return Frontier;

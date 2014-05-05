@@ -40,5 +40,15 @@ define(['lib/underscore', 'src/graph_search/frontier'], function(_, Frontier){
     return this.pathCost + this.problem.goalDistanceHeuristic(this.state);
   }
 
+  Node.prototype.path = function(){
+    var steps = [],
+        node = this;
+    while(node) {
+      steps.push(node);
+      node = node.parent;
+    }
+    return steps.reverse();
+  }
+
   return Node;
 });
