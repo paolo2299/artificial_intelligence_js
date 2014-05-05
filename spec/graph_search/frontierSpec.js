@@ -1,4 +1,4 @@
-define(['src/graph_search/frontier'], function(Frontier){
+define(['graph_search/frontier'], function(Frontier){
 
   describe("Frontier", function(){
     var frontier,
@@ -149,5 +149,6 @@ define(['src/graph_search/frontier'], function(Frontier){
         expect(frontier.getNodeWithState(node1.state)).toBeNull();
       });
     });
+
   });
 });

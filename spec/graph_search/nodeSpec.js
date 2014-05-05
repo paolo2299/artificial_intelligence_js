@@ -1,4 +1,4 @@
-define(['src/graph_search/node'], function(Node){
+define(['graph_search/node'], function(Node){
 
   describe("Node", function(){
     var initialNode,
@@ -50,6 +50,15 @@ define(['src/graph_search/node'], function(Node){
         expect(initialNode.priority()).toEqual(1); //0 + "a".length
         expect(initialNode.child("b").priority()).toEqual(3); //1 + "ab".length
         expect(initialNode.child("b").child("c").priority()).toEqual(5); //2 + "abc".length
+      });
+    });
+
+    describe(".path()", function(){
+      it("should return the correct path", function(){
+        var node1 = initialNode.child("a"),
+            node2 = node1.child("b"),
+            node3 = node2.child("a");
+        expect(node3.path()).toEqual([initialNode, node1, node2, node3]);
       });
     });
   });

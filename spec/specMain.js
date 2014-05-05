@@ -8,16 +8,16 @@ require.config({
     }
   },
   paths : {
-    spec: 'jasmine-2.0.0/spec',
-    src: '../src',
+    graph_search: '../src/graph_search',
+    graph_search_spec: './graph_search',
     lib: '../lib'
   }
 });
 
 
 require([
-  "graph_search/FrontierSpec",
-  "graph_search/NodeSpec"
+  "graph_search_spec/FrontierSpec",
+  "graph_search_spec/NodeSpec"
   ], function () {
 	window.executeTests();
 });

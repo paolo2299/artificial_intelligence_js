@@ -1,4 +1,4 @@
-define(['lib/underscore', 'src/graph_search/frontier', 'src/graph_search/node'], function(_, Frontier, Node){
+define(['lib/underscore', 'graph_search/frontier', 'graph_search/node'], function(_, Frontier, Node){
 
   var Solver = function(problem){
     var initialNode = Node.initialNode(problem);
