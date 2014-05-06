@@ -8,6 +8,7 @@ define(['lib/underscore'], function(_){
 
   SlidingTilePuzzle.prototype.shuffle = function(){
     this.initialState = this._randomState();
+    return this;
   };
 
   SlidingTilePuzzle.prototype.possibleActions = function(state){
@@ -22,12 +23,13 @@ define(['lib/underscore'], function(_){
     if( blankY > 1 ){
       actions.push("down");
     }
-    if( blankX < size ){
+    if( blankX < this.size ){
       actions.push("left");
     }
     if( blankX > 1 ){
       actions.push("right");
     }
+    return actions;
   };
 
   SlidingTilePuzzle.prototype.result = function(state, action){
@@ -57,14 +59,13 @@ define(['lib/underscore'], function(_){
         targetX = blankX;
         targetY = blankY - 1;
         break;
-
-      sourceIndex = this._blankIndex(state);
-      targetIndex = this._coordinateToIndex(targetX, targetY);
-      resultState = _.clone(state);
-      resultState[targetIndex] = state[sourceIndex];
-      resultState[sourceIndex] = state[targetIndex];
-      return resultState;
     }
+    sourceIndex = this._blankIndex(state);
+    targetIndex = this._coordinateToIndex(targetX, targetY);
+    resultState = _.clone(state);
+    resultState[targetIndex] = state[sourceIndex];
+    resultState[sourceIndex] = state[targetIndex];
+    return resultState;
   };
 
   SlidingTilePuzzle.prototype.stepCost = function(state, action){
@@ -72,7 +73,7 @@ define(['lib/underscore'], function(_){
   };
 
   SlidingTilePuzzle.prototype.goalReached = function(state){
-    return (state === this._goalState());
+    return (state.join(',') === this._goalState().join(','));
   };
 
   SlidingTilePuzzle.prototype.goalDistanceHeuristic = function(state){
@@ -98,12 +99,13 @@ define(['lib/underscore'], function(_){
 
   SlidingTilePuzzle.prototype._randomState = function(){
     var state = this._goalState(),
+        _this = this,
         action,
         possibleActions;
     _(SlidingTilePuzzle.RANDOM_ITERATIONS).times(function(){
-      possibleActions = this.possibleActions(state);
+      possibleActions = _this.possibleActions(state);
       action = possibleActions[_.random(possibleActions.length - 1)];
-      state = this.result(state, action);
+      state = _this.result(state, action);
     });
     return state;
   };
@@ -132,6 +134,8 @@ define(['lib/underscore'], function(_){
   };
 
   SlidingTilePuzzle.prototype._coordinateToIndex = function(coordX, coordY){
-    return (coordX - 1) * this.size + (coordX - 1);
+    return (coordY - 1) * this.size + (coordX - 1);
   };
+
+  return SlidingTilePuzzle;
 });
