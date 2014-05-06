@@ -34,7 +34,6 @@ define(['graph_search/solver/cheapest_first_search'], function(Solver){
     describe(".solve()", function(){
       it("should solve the problem optimally", function(){
         var solution = solver.solve();
-        console.log(solver.exploredSet);
         expect(solution.length).toEqual(6);
         expect(solution[0].state).toEqual('');
         expect(solution[1].state).toEqual("aa");
@@ -50,7 +49,6 @@ define(['graph_search/solver/cheapest_first_search'], function(Solver){
           return Math.abs(10 - state.length);
         };
         var solution = solver.solve();
-        console.log(solver.exploredSet);
         expect(solution.length).toEqual(6);
         expect(solution[0].state).toEqual('');
         expect(solution[1].state).toEqual("aa");
