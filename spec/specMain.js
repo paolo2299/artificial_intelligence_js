@@ -9,7 +9,6 @@ require.config({
   },
   paths : {
     graph_search: '../src/graph_search',
-    graph_search_spec: './graph_search',
     lib: '../lib'
   }
 });
@@ -18,7 +17,7 @@ require.config({
 require([
   "graph_search_spec/frontier_spec",
   "graph_search_spec/node_spec",
-  "graph_search_spec/solver/cheapest_first_search_spec"
+  "graph_search_spec/solver_spec/cheapest_first_search_spec"
   ], function () {
 	window.executeTests();
 });
