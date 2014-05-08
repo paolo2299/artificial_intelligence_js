@@ -1,48 +1,43 @@
-var games = AI.namespace('games');
+//TODO - include jquery, include and use underscore to neaten stuff up
 
-games.SlidingTilePuzzle = (function(){
-
+define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheapest_first_search"], function(Puzzle, Solver){
   var defaultOptions = {
-	imageSize: 300,
-	puzzleSize: 3,
-	imageUrl: "http://www.acclaimimages.com/_gallery/_free_images/0124-1103-0716-0350_planet_earth_from_space_s.jpg"
-      },
-      problemServiceUrl = "http://shielded-basin-7502.herokuapp.com/problem_service/sliding_tile/",
-      Constr;
+	  imageSize: 300,
+	  puzzleSize: 3,
+	  imageUrl: "http://www.acclaimimages.com/_gallery/_free_images/0124-1103-0716-0350_planet_earth_from_space_s.jpg"
+  };
 
-  Constr = function(elementId, options){
+  var SlidingTileBoard = function(elementId, options){
     this.options = $.extend({}, defaultOptions, options || {});
     this.maxTileIndex = Math.pow(this.options.puzzleSize, 2);
     this.squareSize = this.options.imageSize/this.options.puzzleSize;
     this.elementId = elementId;
     this.boardId = elementId + 'Board';
     this.boardSelector = '#' + this.boardId;
+    this.puzzle = new Puzzle(this.options.puzzleSize);
     this.zi = 1;
     this._render();
-  }
+  };
 
   //public
 
-  Constr.prototype.shuffle = function() {
-    var _this = this;
-    $.getJSON(problemServiceUrl + this.options.puzzleSize + "/initial_state?callback=?&random=true", null, function(data){
-      _this._moveToState(data);
-    });
-  }
+  SlidingTileBoard.prototype.shuffle = function() {
+    this.puzzle.shuffle();
+    this._moveToState(this.puzzle.initialState);
+  };
 
-  Constr.prototype.solve = function() {
-    var _this = this,
-        initialState = this._getCurrentState();
-    $.getJSON(problemServiceUrl + this.options.puzzleSize + "/solution?callback=?&initial_state=" + initialState, function(data){
-      for(var i = 1; i < data.length; i++) {
-        _this._moveToState(data[i]['state']);
-      }
-    });
+  SlidingTileBoard.prototype.solve = function() {
+    var solution;
+    this.puzzle.initialState = this._getCurrentState();
+    solution = this.puzzle.solve();
+    for(var i = 1; i < solution.length; i++) {
+      this._moveToState(solution[i].state);
+    }
   }
 
   //private
 
-  Constr.prototype._render = function() {
+  SlidingTileBoard.prototype._render = function() {
     var puzzleSize = this.options.puzzleSize,
 	boardSizePx = (this.squareSize * puzzleSize) + 'px',
 	elementId = this.elementId,
@@ -87,7 +82,7 @@ games.SlidingTilePuzzle = (function(){
     $(this.boardSelector).children("div").click(function() { _this._moveClickedSquare(this); });
   }
 
-  Constr.prototype._moveClickedSquare = function(clickedSquare)
+  SlidingTileBoard.prototype._moveClickedSquare = function(clickedSquare)
   {
     clickedSquare = $(clickedSquare);
     var empty_square = $(this.boardSelector + " > #square" + Math.pow(this.options.puzzleSize, 2));
@@ -118,7 +113,7 @@ games.SlidingTilePuzzle = (function(){
     }
   }
 
-  Constr.prototype._swapTiles = function(tile1, tile2){
+  SlidingTileBoard.prototype._swapTiles = function(tile1, tile2){
     var tile1x = parseInt(tile1.attr('data-coord-x'));
     var tile1y = parseInt(tile1.attr('data-coord-y'));
     var tile2x = parseInt(tile2.attr('data-coord-x'));
@@ -139,7 +134,7 @@ games.SlidingTilePuzzle = (function(){
     tile2.animate({ left: tile1left, top: tile1top }, 200, function(){});
   }
 
-  Constr.prototype._moveTile = function(tile, index){
+  SlidingTileBoard.prototype._moveTile = function(tile, index){
     var coordx = (index % 3) + 1;
     var coordy = Math.floor(index / 3) + 1;
 
@@ -153,7 +148,7 @@ games.SlidingTilePuzzle = (function(){
     tile.animate({ left: tileleft, top: tiletop }, 200, function(){});
   }
 
-  Constr.prototype._moveToState = function(state) {
+  SlidingTileBoard.prototype._moveToState = function(state) {
     var tile;
     for(var i = 0; i < state.length; i++){
       if(state[i] === null){
@@ -165,7 +160,7 @@ games.SlidingTilePuzzle = (function(){
     }
   }
 
-  Constr.prototype._getCurrentState = function() {
+  SlidingTileBoard.prototype._getCurrentState = function() {
     var currentState = [];
     var indices = {}
     $(this.boardSelector + " > div[id^='square']").each(function(){
@@ -185,5 +180,5 @@ games.SlidingTilePuzzle = (function(){
     return currentState.join();
   }
 
-  return Constr;
-}());
+  return SlidingTileBoard;
+});

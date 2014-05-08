@@ -1,4 +1,4 @@
-define(['graph_search/solver/cheapest_first_search'], function(Solver){
+define(['graph_search/solvers/cheapest_first_search'], function(Solver){
   describe("Cheapest first search solver", function(){
     var exploredSetSizeWithoutHeuristic,
         exploredSetSizeWithHeuristic,
