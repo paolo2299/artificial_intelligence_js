@@ -78,16 +78,17 @@ define(['lib/underscore'], function(_){
 
   SlidingTilePuzzle.prototype.goalDistanceHeuristic = function(state){
     var distance = 0,
-        coord, coordX, coordY;
+        _this = this,
+        coord, coordX, coordY,
         goal, goalX, goalY;
     _.each(state, function(tile, idx){
       if( tile === null ){
         return;
       }
-      coord = this._indexToCoordinate(idx);
+      coord = _this._indexToCoordinate(idx);
       coordX = coord[0];
       coordY = coord[1];
-      goal = this._indexToCoordinate(tile - 1);
+      goal = _this._indexToCoordinate(tile - 1);
       goalX = goal[0];
       goalY = goal[1];
       distance += (Math.abs(goalX - coordX) + Math.abs(goalY - coordY));
