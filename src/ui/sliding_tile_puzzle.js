@@ -1,6 +1,4 @@
-//TODO - include jquery, include and use underscore to neaten stuff up
-
-define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheapest_first_search"], function(Puzzle, Solver){
+define(["jquery", "graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheapest_first_search"], function($, Puzzle, Solver){
   var defaultOptions = {
 	  imageSize: 300,
 	  puzzleSize: 3,
@@ -27,10 +25,12 @@ define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheap
   };
 
   SlidingTileBoard.prototype.solve = function() {
-    var solution;
-    this.puzzle.initialState = this._getCurrentState();
-    solution = this.puzzle.solve();
-    for(var i = 1; i < solution.length; i++) {
+    var solver,
+        solution,
+        i;
+    solver = new Solver(this.puzzle);
+    solution = solver.solve();
+    for(i = 1; i < solution.length; i++) {
       this._moveToState(solution[i].state);
     }
   }
@@ -39,9 +39,11 @@ define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheap
 
   SlidingTileBoard.prototype._render = function() {
     var puzzleSize = this.options.puzzleSize,
-	boardSizePx = (this.squareSize * puzzleSize) + 'px',
-	elementId = this.elementId,
-	_this = this;
+	      boardSizePx = (this.squareSize * puzzleSize) + 'px',
+	      elementId = this.elementId,
+	      _this = this,
+        coordx, coordy,
+        i;
 
     $('#' + elementId).html("<div id = '" + this.boardId + "'></div>"); // Inject DIV into target, this is our game board
     $(this.boardSelector).css({ 
@@ -52,28 +54,28 @@ define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheap
     });
 
     // Populate the game board's HTML container with squares
-    for (var i = 0; i < this.maxTileIndex; i++) {
-      var coordx = (i % puzzleSize) + 1;
-      var coordy = Math.floor(i / puzzleSize) + 1;
+    for (i = 0; i < this.maxTileIndex; i++) {
+      coordx = (i % puzzleSize) + 1;
+      coordy = Math.floor(i / puzzleSize) + 1;
       $(this.boardSelector).append(
-	"<div id='square" + (i + 1) + 
-	"' data-coord-x='" + coordx + 
-	"' data-coord-y='" + coordy + 
-	"' style = 'position: absolute; " + 
-	           "left: " + ((i % puzzleSize) * this.squareSize) + "px; " + 
-		   "top: " + Math.floor(i / puzzleSize) * this.squareSize + "px; " + 
-		   "width: " + this.squareSize + "px; " + 
-		   "height: " + this.squareSize + "px; " + 
-		   "text-align: center; " + 
-		   "-moz-box-shadow: inset 0 0 20px #555555; " + 
-		   "-webkit-box-shadow: inset 0 0 20px #555555; " + 
-		   "box-shadow: inset 0 0 20px #555555; " + 
-		   "background: #ffffff " + 
-		                "url(" + this.options.imageUrl  + ") " + 
-		                (-(i % puzzleSize) * this.squareSize) + "px " + 
-		                -Math.floor(i / puzzleSize) * this.squareSize + "px " + 
+	      "<div id='square" + (i + 1) + 
+	      "' data-coord-x='" + coordx + 
+	      "' data-coord-y='" + coordy + 
+	      "' style = 'position: absolute; " + 
+	      "left: " + ((i % puzzleSize) * this.squareSize) + "px; " + 
+		    "top: " + Math.floor(i / puzzleSize) * this.squareSize + "px; " + 
+		    "width: " + this.squareSize + "px; " + 
+		    "height: " + this.squareSize + "px; " + 
+		    "text-align: center; " + 
+		    "-moz-box-shadow: inset 0 0 20px #555555; " + 
+		    "-webkit-box-shadow: inset 0 0 20px #555555; " + 
+		    "box-shadow: inset 0 0 20px #555555; " + 
+		    "background: #ffffff " + 
+		                 "url(" + this.options.imageUrl  + ") " + 
+		                 (-(i % puzzleSize) * this.squareSize) + "px " + 
+		                 -Math.floor(i / puzzleSize) * this.squareSize + "px " + 
 				"no-repeat !important'>" + 
-	"</div>"
+	      "</div>"
       );
     }
     // Empty up the last square, as the starting point
@@ -84,23 +86,25 @@ define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheap
 
   SlidingTileBoard.prototype._moveClickedSquare = function(clickedSquare)
   {
+    var emptySquare = $(this.boardSelector + " > #square" + Math.pow(this.options.puzzleSize, 2)),
+        emptyCoordX = parseInt(emptySquare.attr('data-coord-x')),
+        emptyCoordY = parseInt(emptySquare.attr('data-coord-y')),
+        movable = false,
+        clickedCoordX,
+        clickedCoordY;
+    
     clickedSquare = $(clickedSquare);
-    var empty_square = $(this.boardSelector + " > #square" + Math.pow(this.options.puzzleSize, 2));
+    clickedCoordX = parseInt(clickedSquare.attr('data-coord-x'));
+    clickedCoordY = parseInt(clickedSquare.attr('data-coord-y'));
     // Locate movable tiles based on where the empty spot is, we can only move the four surrounding squares
-    var movable = false;
-
-    var empty_coordx = parseInt(empty_square.attr('data-coord-x'));
-    var empty_coordy = parseInt(empty_square.attr('data-coord-y'));
-    var clicked_coordx = parseInt(clickedSquare.attr('data-coord-x'));
-    var clicked_coordy = parseInt(clickedSquare.attr('data-coord-y'));
 
     // The clicked square is east or west of the empty square
-    if (empty_coordy == clicked_coordy && Math.abs(clicked_coordx - empty_coordx) == 1){
+    if (emptyCoordY == clickedCoordY && Math.abs(clickedCoordX - emptyCoordX) == 1){
       movable = true;
     }
 
     // The clicked square is north or south of the empty square
-    if (empty_coordx == clicked_coordx && Math.abs(clicked_coordy - empty_coordy) == 1){
+    if (emptyCoordX == clickedCoordX && Math.abs(clickedCoordY - emptyCoordY) == 1){
       movable = true;
     }
 
@@ -109,15 +113,19 @@ define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheap
       // Increment zindex so the clicked tile is always on top of all others
       $(clickedSquare).css("z-index", this.zi++);
 
-      this._swapTiles(empty_square, clickedSquare);
+      this._swapTiles(emptySquare, clickedSquare);
     }
   }
 
   SlidingTileBoard.prototype._swapTiles = function(tile1, tile2){
-    var tile1x = parseInt(tile1.attr('data-coord-x'));
-    var tile1y = parseInt(tile1.attr('data-coord-y'));
-    var tile2x = parseInt(tile2.attr('data-coord-x'));
-    var tile2y = parseInt(tile2.attr('data-coord-y'));
+    var tile1x = parseInt(tile1.attr('data-coord-x')),
+        tile1y = parseInt(tile1.attr('data-coord-y')),
+        tile2x = parseInt(tile2.attr('data-coord-x')),
+        tile2y = parseInt(tile2.attr('data-coord-y')),
+        tile1left = tile1.css("left"),
+        tile1top  = tile1.css("top"),
+        tile2left = tile2.css("left"),
+        tile2top  = tile2.css("top");
 
     // Swap squares... Animate clicked square into empty square position
     tile1.attr('data-coord-x', tile2x);
@@ -125,32 +133,27 @@ define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheap
     tile2.attr('data-coord-x', tile1x);
     tile2.attr('data-coord-y', tile1y);
 
-    var tile1left = tile1.css("left");
-    var tile1top  = tile1.css("top");
-    var tile2left = tile2.css("left");
-    var tile2top  = tile2.css("top");
-
     tile1.animate({ left: tile2left, top: tile2top }, 200, function(){});
     tile2.animate({ left: tile1left, top: tile1top }, 200, function(){});
   }
 
   SlidingTileBoard.prototype._moveTile = function(tile, index){
-    var coordx = (index % 3) + 1;
-    var coordy = Math.floor(index / 3) + 1;
+    var coordx = (index % this.options.puzzleSize) + 1,
+        coordy = Math.floor(index / this.options.puzzleSize) + 1,
+        tileleft = ((index % this.options.puzzleSize) * this.squareSize) + "px",
+        tiletop  = (Math.floor(index / this.options.puzzleSize) * this.squareSize) + "px";
 
     // Swap squares... Animate clicked square into empty square position
     tile.attr('data-coord-x', coordx);
     tile.attr('data-coord-y', coordy);
 
-    var tileleft = ((index % 3) * this.squareSize) + "px";
-    var tiletop  = (Math.floor(index / 3) * this.squareSize) + "px";
-
     tile.animate({ left: tileleft, top: tiletop }, 200, function(){});
   }
 
   SlidingTileBoard.prototype._moveToState = function(state) {
-    var tile;
-    for(var i = 0; i < state.length; i++){
+    var tile,
+        i;
+    for(i = 0; i < state.length; i++){
       if(state[i] === null){
         tile = $(this.boardSelector + " > #square" + this.maxTileIndex);
       } else {
@@ -161,23 +164,25 @@ define(["graph_search/problems/sliding_tile_puzzle", "graph_search/solvers/cheap
   }
 
   SlidingTileBoard.prototype._getCurrentState = function() {
-    var currentState = [];
-    var indices = {}
+    var currentState = [],
+        indices = {},
+        _this = this,
+        i;
     $(this.boardSelector + " > div[id^='square']").each(function(){
-      var coordx = parseInt($(this).attr('data-coord-x'));
-      var coordy = parseInt($(this).attr('data-coord-y'));
-      var squareNum = parseInt($(this).attr('id').slice(-1));
-      var index = (coordy - 1)*3 + (coordx - 1)
+      var coordx = parseInt($(this).attr('data-coord-x')),
+          coordy = parseInt($(this).attr('data-coord-y')),
+          squareNum = parseInt($(this).attr('id').slice(-1)),
+          index = (coordy - 1)*_this.options.puzzleSize + (coordx - 1);
       indices[index] = squareNum;
     });
-    for(var i = 0; i < this.maxTileIndex; i++){
+    for(i = 0; i < this.maxTileIndex; i++){
       if(indices[i] == this.maxTileIndex){
         currentState.push(0);
       } else {
         currentState.push(indices[i]);
       }
     }
-    return currentState.join();
+    return currentState;
   }
 
   return SlidingTileBoard;

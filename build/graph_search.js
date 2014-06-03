@@ -8,9 +8,9 @@
     }
   },
   paths : {
-    graph_search: 'src/graph_search',
-    lib: 'lib'
+    graph_search: '../src/graph_search',
+    lib: '../lib'
   },
   name: 'graph_search_main',
-  out: 'graph_search.js'  
+  out: '../graph_search.js'  
 })

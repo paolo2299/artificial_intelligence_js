@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My App</title>
+        <script src="../lib/require.js"></script>
+        <script>
+            require.config({
+		shim: {
+		  '../lib/jquery': {
+		     exports: '$'
+		   }
+	        },
+		paths: {
+		  'jquery': '../lib/jquery',
+                  'ui': '../src/ui'
+		}
+            });
+            require(["../graph_search", "sliding_tile"]);
+        </script>
+    </head>
+    <body>
+        <h1>My App</h1>
+	<div id="puzzle"></div>
+	<div id="shuffle">SHUFFLE</div>
+	<div id="solve">SOLVE</div>
+    </body>
+</html>
