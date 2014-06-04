@@ -1,4 +1,4 @@
-define(['lib/underscore', 'graph_search/frontier'], function(_, Frontier){
+define(['underscore', 'graph_search/frontier'], function(_, Frontier){
 
   var Node = function(opts){
     opts = opts || {};

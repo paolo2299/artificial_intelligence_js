@@ -1,4 +1,4 @@
-define(['lib/priority_queue'], function(pq){
+define(['priority_queue'], function(pq){
   
   var Frontier = function(){
     this._queue = pq.PriorityQueue(function(n1, n2){ 

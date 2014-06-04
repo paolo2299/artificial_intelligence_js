@@ -5,17 +5,13 @@
         <script src="../lib/require.js"></script>
         <script>
             require.config({
-		shim: {
-		  '../lib/jquery': {
-		     exports: '$'
-		   }
-	        },
 		paths: {
 		  'jquery': '../lib/jquery',
-                  'ui': '../src/ui'
+		  'underscore': '../lib/underscore',
+		  'graph_search_ui': '../graph_search_ui'
 		}
             });
-            require(["../graph_search", "sliding_tile"]);
+            require(["graph_search_ui", "sliding_tile"]);
         </script>
     </head>
     <body>

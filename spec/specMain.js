@@ -1,15 +1,13 @@
 require.config({
   shim: {
-    'lib/underscore': {
-      exports: '_'
-    },
-    'lib/priority_queue': {
+    'priority_queue': {
       exports: 'priority_queue'
     }
   },
   paths : {
     graph_search: '../src/graph_search',
-    lib: '../lib'
+    underscore: '../lib/underscore',
+    priority_queue: '../lib/priority_queue'
   }
 });
 

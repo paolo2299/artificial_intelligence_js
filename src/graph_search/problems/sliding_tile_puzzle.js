@@ -1,4 +1,4 @@
-define(['lib/underscore'], function(_){
+define(['underscore'], function(_){
   var SlidingTilePuzzle = function(size, initialState) {
     this.size = size || 3;
     this.initialState = initialState || this._goalState();
