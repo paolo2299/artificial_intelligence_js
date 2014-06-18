@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Maze Example</title>
+        <script src="../lib/require.js"></script>
+        <script>
+            require.config({
+		paths: {
+		  'jquery': '../lib/jquery',
+		  'underscore': '../lib/underscore',
+		  'graph_search_ui': '../graph_search_ui'
+		}
+            });
+            require(["graph_search_ui", "maze"]);
+        </script>
+        <style>
+           .cell
+           {
+             display: inline-block;
+             width: 30px;
+             height: 30px;
+             vertical-align: top;
+             -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+             -moz-box-sizing: border-box; /* Firefox, other Gecko */ 
+             box-sizing: border-box; /* Opera/IE 8+ */
+           }
+
+           .cell.north
+           {
+             border-top: 1px solid #000;
+           }
+
+           .cell.south
+           {
+             border-bottom: 1px solid #000;
+           }
+
+           .cell.west
+           {
+             border-left: 1px solid #000;
+           }
+
+           .cell.east
+           {
+             border-right: 1px solid #000;
+           }
+        </style>
+    </head>
+    <body>
+        <h1>Maze Example</h1>
+	<div id="maze"></div>
+    </body>
+</html>
