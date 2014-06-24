@@ -13,9 +13,9 @@ define(['underscore'], function(_){
       throw "To initialize a Maze you must provide either a height and width or a maze";
     }
     if (this.options.initialState) {
-      this._initialState = this.options.initialState;
+      this.initialState = this.options.initialState;
     } else {
-      this._initialState = [0, 0];
+      this.initialState = [0, 0];
     }
   };
 
@@ -89,7 +89,7 @@ define(['underscore'], function(_){
         _this = this;
         _.each([Maze.N, Maze.S, Maze.E, Maze.W], function(direction){
           if ((_this.maze[stateY][stateX] & direction) != 0) {
-            actions.push(dirction);
+            actions.push(direction);
           }
         });
     return actions;
@@ -109,7 +109,7 @@ define(['underscore'], function(_){
   };
 
   Maze.prototype._goalState = function(){
-    return [this._size - 1, this._size - 1];
+    return [this._width - 1, this._height - 1];
   };
 
   Maze.prototype.goalDistanceHeuristic = function(state){

@@ -5,13 +5,20 @@
         <script src="../lib/require.js"></script>
         <script>
             require.config({
+		shim: {
+		  'priority_queue': {
+		    exports: 'priority_queue'
+		  }
+		},
 		paths: {
 		  'jquery': '../lib/jquery',
 		  'underscore': '../lib/underscore',
-		  'graph_search_ui': '../graph_search_ui'
+		  'priority_queue': '../lib/priority_queue',
+		  'ui': '../src/ui',
+		  'graph_search': '../src/graph_search'
 		}
             });
-            require(["graph_search_ui", "sliding_tile"]);
+	    require(["sliding_tile"]);
         </script>
     </head>
     <body>

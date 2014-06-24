@@ -28,6 +28,7 @@ define(["jquery", "graph_search/problems/sliding_tile_puzzle", "graph_search/sol
     var solver,
         solution,
         i;
+    this.puzzle.initialState = this._getCurrentState();
     solver = new Solver(this.puzzle);
     solution = solver.solve();
     for(i = 1; i < solution.length; i++) {
@@ -177,7 +178,7 @@ define(["jquery", "graph_search/problems/sliding_tile_puzzle", "graph_search/sol
     });
     for(i = 0; i < this.maxTileIndex; i++){
       if(indices[i] == this.maxTileIndex){
-        currentState.push(0);
+        currentState.push(null);
       } else {
         currentState.push(indices[i]);
       }

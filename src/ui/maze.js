@@ -1,4 +1,4 @@
-define(["jquery", "underscore", "../graph_search/problems/maze", "graph_search/solvers/cheapest_first_search"], function($, _, Maze, Solver){
+define(["jquery", "underscore", "graph_search/problems/maze", "graph_search/solvers/cheapest_first_search"], function($, _, Maze, Solver){
   var defaultOptions = {
 	  height: 10,
 	  width: 10
@@ -14,14 +14,13 @@ define(["jquery", "underscore", "../graph_search/problems/maze", "graph_search/s
   //public
 
   MazeUI.prototype.solve = function() {
-    var solver,
-        solution,
-        i;
-    solver = new Solver(this._maze);
-    solution = solver.solve();
-    for(i = 1; i < solution.length; i++) {
-      this._moveToState(solution[i].state);
-    }
+    var solver = new Solver(this._maze),
+        solution = solver.solve(),
+        _this = this;
+    _.each(solution, function(node){
+      var nodeX = node.state[0], nodeY = node.state[1];
+      $('#' + _this._elementId + ' [data-y=' + nodeY + ']' + ' [data-x=' + nodeX + ']').addClass('solution');
+    });
   }
 
   //private
@@ -33,11 +32,12 @@ define(["jquery", "underscore", "../graph_search/problems/maze", "graph_search/s
 
     console.log(mazeEl);
 
-    _.each(this._maze.maze, function(row){
+    _.each(this._maze.maze, function(row, rowIndex){
       var rowDiv = $('<div />', {
-        class: 'row'
+        class: 'row',
+        'data-y': rowIndex
       }).appendTo(mazeEl);
-      _.each(row, function(cell){
+      _.each(row, function(cell, colIndex){
         var wallClasses = "";
         if((cell & Maze.N) === 0){
           wallClasses = wallClasses + " north";
@@ -52,7 +52,8 @@ define(["jquery", "underscore", "../graph_search/problems/maze", "graph_search/s
           wallClasses = wallClasses + " west";
         }
         $('<div />', {
-          class: 'cell' + wallClasses
+          class: 'cell' + wallClasses,
+          'data-x': colIndex
         }).appendTo(rowDiv);
       });
     });

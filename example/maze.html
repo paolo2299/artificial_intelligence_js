@@ -5,25 +5,44 @@
         <script src="../lib/require.js"></script>
         <script>
             require.config({
+		shim: {
+		  'priority_queue': {
+		    exports: 'priority_queue'
+		  }
+		},
 		paths: {
 		  'jquery': '../lib/jquery',
 		  'underscore': '../lib/underscore',
-		  'graph_search_ui': '../graph_search_ui'
+		  'priority_queue': '../lib/priority_queue',
+		  'ui': '../src/ui',
+		  'graph_search': '../src/graph_search'
 		}
             });
-            require(["graph_search_ui", "maze"]);
+	</script>
+        <script>
+            require(["maze"]);
         </script>
         <style>
+           .row
+	   {
+	     height: 12px;
+	   }
+
            .cell
            {
              display: inline-block;
-             width: 30px;
-             height: 30px;
+             width: 12px;
+             height: 12px;
              vertical-align: top;
              -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
              -moz-box-sizing: border-box; /* Firefox, other Gecko */ 
              box-sizing: border-box; /* Opera/IE 8+ */
            }
+
+	   .solution
+	   {
+	     background-color: red;
+	   }
 
            .cell.north
            {
@@ -49,5 +68,7 @@
     <body>
         <h1>Maze Example</h1>
 	<div id="maze"></div>
+	<div id="random">GENERATE RANDOM MAZE</div>
+	<div id="solve">SOLVE</div>
     </body>
 </html>
