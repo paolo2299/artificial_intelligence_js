@@ -1,5 +1,6 @@
 define(['underscore', 'graph_search/frontier', 'graph_search/node'], function(_, Frontier, Node){
 
+  //TODO - follow the lead of discrete_local_search and return an object here, not an initializer
   var Solver = function(problem){
     var initialNode = Node.initialNode(problem);
     this.problem = problem;
