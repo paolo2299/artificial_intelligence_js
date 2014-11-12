@@ -10,7 +10,6 @@ define(['underscore'], function(_){
       while(restarts >= 0){
         possibleSolution = solver.solve(problem);
         if (problem.objectiveFunction(possibleSolution) > problem.objectiveFunction(currentSolution)) {
-          console.log("better");
           currentSolution = possibleSolution;
         }
         restarts -= 1;

@@ -2,41 +2,103 @@ define(['underscore'], function(_){
   var ticTacToe = {
     X: 'x',
     O: 'o',
+    PLAYER1: 1,
+    PLAYER2: 2,
+
     initialState: [
       [null, null, null],
       [null, null, null],
       [null, null, null]
     ],
+
     player: function(state) {
-      if(this._countXs(state) > this._countOs(state)) {
-        return 2;
+      if((this._countPreviousMoves(state) % 2) === 0) {
+        return this.PLAYER1;
       } else {
-        return 1;
+        return this.PLAYER2;
       }
     },
+
     actions: function(state) {
-     //TODO   
+     var availableCoordinates = [],
+         player = this.player(state),
+         placeableEntity = (player === this.PLAYER1) ? this.X : this.O;
+     _.each(state, function(row, row_index){
+       _.each(row, function(entity, column_index){
+         if(entity === null){
+           availableCoordinates.push([row_index, column_index]);
+         }
+       });
+     });
+     return _.map(availableCoordinates, function(coord){
+       return {
+         entity: placeableEntity,
+         coordinate: coord
+       };
+     });
     },
+
     result: function(state, action) {
-     //TODO   
+      var row = action.coordinate[0],
+          column = action.coordinate[1],
+          resultState = state.slice(0);
+      //TODO - should this check if the action is valid first?
+      resultState[row][column] = action.entity;
+      return resultState;
     },
+
     terminalTest: function(state) {
-      return true; //TODO
+      var terminal = false;
+
+      if((this._countPreviousMoves(state) < 9) && (this._winner(state) === null)){
+        return false
+      }
+      return true;
     },
+
     utility: function(terminalState, player) {
-      //TODO return 1, 0
+      var winner;
+      if(!this.terminalTest(terminalState)) {
+        throw "non-terminal state provided";
+      }
+      winner = this._winner(terminalState);
+      if(winner === null) {
+        return 0.5;
+      }
+      return (winner === player) ? 1 : 0;
     },
-    _countXs: function(state) {
-      return this._countEntity(this.X, state);
+
+    _winner: function(state){
+      var winner = null,
+          _this = this;
+      _.each(this._rowsColsAndDiagonals(state), function(array){
+        if(array.join('') === _this.X + _this.X + _this.X) { //TODO - make an Array.prototype.equals helper method
+          winner = 1;
+        } else if(array.join('') === _this.O + _this.O + _this.O) {
+          winner = 2;
+        } //TODO - how to break from underscore loop - also other bits of codebase that need this
+      });
+      return winner
     },
-    _countOs: function(state) {
-      return this._countEntity(this.O, state);
+
+    _rowsColsAndDiagonals: function(state) {
+      return [
+        [state[0][0], state[0][1], state[0][2]],  //row 0
+        [state[1][0], state[1][1], state[1][2]],  //row 1
+        [state[2][0], state[2][1], state[2][2]],  //row 2
+        [state[0][0], state[1][0], state[2][0]],  //col 0
+        [state[0][1], state[1][1], state[2][1]],  //col 1
+        [state[0][2], state[1][2], state[2][2]],  //col 2
+        [state[0][0], state[1][1], state[2][2]],  //diag 1
+        [state[0][2], state[1][1], state[2][0]]   //diag 2
+      ];
     },
-    _countEntity: function(entity, state) {
+
+    _countPreviousMoves: function(state) {
       var count = 0;
       _.each(state, function(row){
         _.each(row, function(el){
-          if(el === entity){
+          if(el != null){
             count += 1;
           }
         });
@@ -45,43 +107,5 @@ define(['underscore'], function(_){
     },
   };
 
-
-
-  Maze.prototype.possibleActions = function(state){
-    var actions = [],
-        stateX = state[0], stateY = state[1],
-        _this = this;
-        _.each([Maze.N, Maze.S, Maze.E, Maze.W], function(direction){
-          if ((_this.maze[stateY][stateX] & direction) != 0) {
-            actions.push(direction);
-          }
-        });
-    return actions;
-  };
-
-  Maze.prototype.result = function(state, action){
-    var stateX = state[0], stateY = state[1];
-    return [stateX + Maze.DX[action], stateY + Maze.DY[action]];
-  };
-
-  Maze.prototype.stepCost = function(state, action){
-    return 1;
-  };
-
-  Maze.prototype.goalReached = function(state){
-    return (state.join(',') === this._goalState().join(','));
-  };
-
-  Maze.prototype._goalState = function(){
-    return [this._width - 1, this._height - 1];
-  };
-
-  Maze.prototype.goalDistanceHeuristic = function(state){
-    var stateX = state[0], stateY = state[1],
-        goal = this._goalState(),
-        goalX = goal[0], goalY = goal[1];
-    return Math.abs(goalX - stateX) + Math.abs(goalY - stateY);
-  };
-
-  return Maze;
+  return ticTacToe;
 });

@@ -14,10 +14,6 @@ define(['underscore'], function(_){
     return state;
   };
 
-  Queens.prototype.logThis = function(){
-    console.log(this);
-  };
-
   Queens.prototype.objectiveFunction = function(state){
     return -1 * this._numberOfConflicts(state);
   };
