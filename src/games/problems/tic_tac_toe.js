@@ -68,6 +68,12 @@ define(['underscore'], function(_){
       return (winner === player) ? 1 : 0;
     },
 
+    printState: function(state) {
+      _.each(state, function(row){
+        console.log(row.join(','));
+      });
+    },
+
     _winner: function(state){
       var winner = null,
           _this = this;
