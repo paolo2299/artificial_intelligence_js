@@ -1,13 +1,14 @@
 define(['underscore'], function(_){
   var solver = {
-    nextMove: function(game, state, player){
+    nextMove: function(game, state){
       var _this = this,
+          player = game.player(state),
           minimax,
           bestMinimax,
           bestAction;
       _.each(game.actions(state), function(action){
         minimax = _this._minimax(game, game.result(state, action), player);
-        if((bestMinimax === undefined) || (minimax > bestMinimax)) {
+        if((bestMinimax === undefined) || minimax > bestMinimax) {
           bestMinimax = minimax;
           bestAction = action;
         }
@@ -34,13 +35,22 @@ define(['underscore'], function(_){
     },
 
     _minimax: function(game, state, player){
-      var _this = this;
+      var _this = this,
+          currentPlayer = game.player(state),
+          possibleActions,
+          utilities;
       if(game.terminalTest(state)){
         return game.utility(state, player);
       }
-      return _.max(_.map(game.actions, function(action){
-        _this._minimax(game, game.result(state, action), player);
-      }));
+      possibleActions = game.actions(state);
+      utilities = _.map(possibleActions, function(action){
+        return _this._minimax(game, game.result(state, action), player);
+      })
+      if (currentPlayer === 1) {
+        return _.max(utilities);
+      } else {
+        return _.min(utilities);
+      }
     }
   }
 

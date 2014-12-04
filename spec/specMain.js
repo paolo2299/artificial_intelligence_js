@@ -22,7 +22,8 @@ require([
   "discrete_local_search_spec/problems_spec/queens_spec",
   "discrete_local_search_spec/solvers_spec/hill_climbing_steepest_ascent_spec",
   "discrete_local_search_spec/solvers_spec/hill_climbing_with_restarts_spec",
-  "games_spec/problems_spec/tic_tac_toe_spec"
+  "games_spec/problems_spec/tic_tac_toe_spec",
+  "games_spec/solvers_spec/minimax_spec"
   ], function () {
 	window.executeTests();
 });
